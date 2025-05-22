@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>GPIO Toggle</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
+    button {
+      font-size: 2em;
+      padding: 20px 40px;
+      margin: 20px;
+      cursor: pointer;
+    }
+    .reading {
+      font-size: 1.5em;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>GPIO Toggle Control</h1>
+  <form action="/on" method="get">
+    <button style="background:limegreen;">ON</button>
+  </form>
+  <form action="/off" method="get">
+    <button style="background:tomato;">OFF</button>
+  </form>
+
+  <div class="reading">
+    {% if temperature is not none and humidity is not none %}
+      <p>🌡️ Temperature: <strong>{{ temperature }} °C</strong></p>
+      <p>💧 Humidity: <strong>{{ humidity }} %</strong></p>
+    {% else %}
+      <p style="color: red;">⚠️ Sensor read failed</p>
+    {% endif %}
+  </div>
+  <div class="reading">
+    {% if cpu_temp is not none %}
+      <p>🖥️ CPU Temp: <strong>{{ cpu_temp }} °C</strong></p>
+    {% endif %}
+    {% if voltage %}
+      <p>⚡ Core Voltage: <strong>{{ voltage }}</strong></p>
+    {% endif %}
+  </div>
+
+</body>
+</html>
