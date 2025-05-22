@@ -6,19 +6,7 @@ import Adafruit_DHT
 import subprocess
 
 app = Flask(__name__)
-
-# Pins to be made controllable (BCM numbering)
-# Excluding GPIO4 (used by DHT22)
-CONTROLLABLE_PINS = [
-    2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
-    18, 19, 20, 21, 22, 23, 24, 25, 26, 27
-]
-
-# Dictionary to hold LED objects and their states
-# We'll store state here for simplicity, though for a real app, reading actual state might be better
-gpio_states = {pin: False for pin in CONTROLLABLE_PINS} # False for OFF, True for ON
-gpio_leds = {pin: LED(pin) for pin in CONTROLLABLE_PINS}
-
+led = LED(17)  # GPIO17 (physical pin 11)
 sensor = Adafruit_DHT.DHT22
 dht_pin = 4  # GPIO4 (physical pin 7)
 
@@ -57,20 +45,17 @@ def index():
         humidity=humidity,
         cpu_temp=cpu_temp,
         voltage=voltage,
-        current_time=current_time,
-        gpio_pins=CONTROLLABLE_PINS,
-        gpio_states=gpio_states
+        current_time=current_time
     )
 
-@app.route('/gpio/<int:pin_number>/<string:action>')
-def gpio_control(pin_number, action):
-    if pin_number in gpio_leds:
-        if action == 'on':
-            gpio_leds[pin_number].on()
-            gpio_states[pin_number] = True
-        elif action == 'off':
-            gpio_leds[pin_number].off()
-            gpio_states[pin_number] = False
+@app.route('/on')
+def turn_on():
+    led.on()
+    return redirect(url_for('index'))
+
+@app.route('/off')
+def turn_off():
+    led.off()
     return redirect(url_for('index'))
 
 if __name__ == '__main__':

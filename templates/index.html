@@ -107,42 +107,6 @@
         color: #ff3b30; /* Red for error */
       }
 
-      .gpio-grid {
-        display: grid;
-        grid-template-columns: repeat(
-          auto-fill,
-          minmax(120px, 1fr)
-        ); /* Adjust minmax for button size */
-        gap: 15px;
-        margin-top: 10px;
-      }
-
-      .gpio-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 10px;
-        background: rgba(255, 255, 255, 0.3);
-        border-radius: 8px;
-      }
-
-      .gpio-item span {
-        font-weight: bold;
-        margin-bottom: 8px;
-        font-size: 0.9em;
-      }
-
-      .gpio-item .buttons {
-        display: flex;
-        gap: 8px;
-      }
-
-      .gpio-item button {
-        font-size: 0.8em; /* Smaller buttons for individual GPIOs */
-        padding: 8px 12px;
-        margin: 0; /* Remove default margin from general button style */
-      }
-
       /* Responsive adjustments */
       @media (max-width: 768px) {
         h1 {
@@ -158,13 +122,6 @@
         .controls .buttons {
           flex-direction: column; /* Stack buttons on smaller screens */
         }
-        .gpio-grid {
-          grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-        }
-        .gpio-item button {
-          font-size: 0.7em;
-          padding: 6px 10px;
-        }
       }
     </style>
   </head>
@@ -172,55 +129,15 @@
     <h1>Van Control Dashboard</h1>
 
     <div class="container">
-      <div class="card gpio-controls">
-        <h2>GPIO Controls</h2>
-        <div class="gpio-grid">
-          {% for pin in gpio_pins %}
-          <div class="gpio-item">
-            <span>GPIO {{ pin }}</span>
-            <div class="buttons">
-              <form
-                action="{{ url_for('gpio_control', pin_number=pin, action='on') }}"
-                method="get"
-                style="display: contents"
-              >
-                <button
-                  class="on"
-                  {%
-                  if
-                  gpio_states[pin]
-                  %}disabled
-                  title="Already ON"
-                  {%
-                  endif
-                  %}
-                >
-                  ON
-                </button>
-              </form>
-              <form
-                action="{{ url_for('gpio_control', pin_number=pin, action='off') }}"
-                method="get"
-                style="display: contents"
-              >
-                <button
-                  class="off"
-                  {%
-                  if
-                  not
-                  gpio_states[pin]
-                  %}disabled
-                  title="Already OFF"
-                  {%
-                  endif
-                  %}
-                >
-                  OFF
-                </button>
-              </form>
-            </div>
-          </div>
-          {% endfor %}
+      <div class="card controls">
+        <h2>System Controls</h2>
+        <div class="buttons">
+          <form action="/on" method="get" style="display: contents">
+            <button class="on">LED ON</button>
+          </form>
+          <form action="/off" method="get" style="display: contents">
+            <button class="off">LED OFF</button>
+          </form>
         </div>
       </div>
 
