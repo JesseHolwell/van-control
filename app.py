@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for
 import datetime
-import datetime
-from gpiozero import LED, OutputDeviceBadPin
+from gpiozero import LED
+from gpiozero.exc import GPIODeviceError
 import Adafruit_DHT
 import subprocess
 
@@ -26,10 +26,28 @@ for pin_num in CONTROLLABLE_PINS:
     try:
         leds[pin_num] = LED(pin_num)
         pin_states[pin_num] = leds[pin_num].is_lit
-    except OutputDeviceBadPin:
-        print(f"Pin {pin_num} is not a valid GPIO pin or is in use. Skipping.")
-        if pin_num in CONTROLLABLE_PINS: # remove if it failed
-            CONTROLLABLE_PINS.remove(pin_num)
+    except GPIODeviceError:
+        print(f"Pin {pin_num} is not a valid GPIO pin, is in use, or caused an error. Skipping.")
+        # Create a new list excluding the problematic pin to avoid modifying while iterating
+        if pin_num in CONTROLLABLE_PINS:
+            # It's safer to build a new list or mark for removal and then remove outside the loop.
+            # However, for this specific case, since we are iterating over a copy (CONTROLLABLE_PINS[:]),
+            # direct removal is problematic. Let's adjust the iteration or how we handle removals.
+            # For simplicity here, we'll just note it and the pin won't be in 'leds' or 'pin_states'.
+            # The template will only iterate over pins present in 'leds' via 'controllable_pins' which should be updated.
+            # A better approach would be to filter CONTROLLABLE_PINS after the loop.
+            # Let's refine this:
+            pass # The pin won't be added to 'leds', so it won't be controlled.
+            # We need to ensure CONTROLLABLE_PINS accurately reflects usable pins.
+            # Let's rebuild CONTROLLABLE_PINS after checking all.
+
+# Refine CONTROLLABLE_PINS to only include successfully initialized pins
+successfully_initialized_pins = list(leds.keys())
+CONTROLLABLE_PINS = [p for p in CONTROLLABLE_PINS if p in successfully_initialized_pins]
+
+# Initialize pin_states for successfully initialized pins
+for pin_num in CONTROLLABLE_PINS:
+    pin_states[pin_num] = leds[pin_num].is_lit
 
 
 sensor = Adafruit_DHT.DHT22
