@@ -63,10 +63,28 @@
         color: #007aff; /* Apple's blue for emphasis */
       }
 
-      .controls .buttons {
+      .controls .buttons,
+      .pin-controls .buttons {
         display: flex;
         gap: 15px;
-        justify-content: center; /* Center buttons within the card */
+        justify-content: flex-start; /* Align buttons to the start */
+        flex-wrap: wrap; /* Allow buttons to wrap to next line */
+      }
+
+      .pin-control-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        background-color: rgba(255, 255, 255, 0.7);
+      }
+
+      .pin-label {
+        font-weight: bold;
+        min-width: 70px; /* Ensure consistent width for pin labels */
       }
 
       button {
@@ -130,14 +148,40 @@
 
     <div class="container">
       <div class="card controls">
-        <h2>System Controls</h2>
-        <div class="buttons">
-          <form action="/on" method="get" style="display: contents">
-            <button class="on">LED ON</button>
-          </form>
-          <form action="/off" method="get" style="display: contents">
-            <button class="off">LED OFF</button>
-          </form>
+        <h2>GPIO Pin Controls</h2>
+        <div class="pin-controls">
+          {% if controllable_pins %} {% for pin_num in controllable_pins %}
+          <div class="pin-control-group">
+            <span class="pin-label"
+              >GPIO {{ pin_num }}: {% if pin_states[pin_num] %}
+              <strong style="color: #34c759">ON</strong>
+              {% else %}
+              <strong style="color: #ff3b30">OFF</strong>
+              {% endif %}
+            </span>
+            <div class="buttons">
+              {% if pin_states[pin_num] %}
+              <form
+                action="{{ url_for('toggle_pin', pin_num=pin_num, action='off') }}"
+                method="get"
+                style="display: contents"
+              >
+                <button class="off">Turn OFF</button>
+              </form>
+              {% else %}
+              <form
+                action="{{ url_for('toggle_pin', pin_num=pin_num, action='on') }}"
+                method="get"
+                style="display: contents"
+              >
+                <button class="on">Turn ON</button>
+              </form>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %} {% else %}
+          <p>No controllable GPIO pins configured.</p>
+          {% endif %}
         </div>
       </div>
 
