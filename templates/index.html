@@ -1,47 +1,256 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <title>GPIO Toggle</title>
-  <style>
-    body { font-family: sans-serif; text-align: center; margin-top: 50px; }
-    button {
-      font-size: 2em;
-      padding: 20px 40px;
-      margin: 20px;
-      cursor: pointer;
-    }
-    .reading {
-      font-size: 1.5em;
-      margin-top: 30px;
-    }
-  </style>
-</head>
-<body>
-  <h1>GPIO Toggle Control</h1>
-  <form action="/on" method="get">
-    <button style="background:limegreen;">ON</button>
-  </form>
-  <form action="/off" method="get">
-    <button style="background:tomato;">OFF</button>
-  </form>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Van Control Dashboard</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+          "Segoe UI Symbol";
+        background: #f0f2f5; /* Light gray background, common in modern UIs */
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        box-sizing: border-box;
+        color: #333;
+      }
 
-  <div class="reading">
-    {% if temperature is not none and humidity is not none %}
-      <p>🌡️ Temperature: <strong>{{ temperature }} °C</strong></p>
-      <p>💧 Humidity: <strong>{{ humidity }} %</strong></p>
-    {% else %}
-      <p style="color: red;">⚠️ Sensor read failed</p>
-    {% endif %}
-  </div>
-  <div class="reading">
-    {% if cpu_temp is not none %}
-      <p>🖥️ CPU Temp: <strong>{{ cpu_temp }} °C</strong></p>
-    {% endif %}
-    {% if voltage %}
-      <p>⚡ Core Voltage: <strong>{{ voltage }}</strong></p>
-    {% endif %}
-  </div>
+      h1 {
+        color: #1d1d1f; /* Apple's dark gray for text */
+        margin-bottom: 30px;
+        font-size: 2.5em;
+      }
 
-</body>
+      .container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        width: 100%;
+        max-width: 1200px;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.6); /* Opaque glass effect */
+        backdrop-filter: blur(10px) saturate(180%);
+        -webkit-backdrop-filter: blur(10px) saturate(180%);
+        border-radius: 12px; /* Rounded corners like Apple UI elements */
+        padding: 25px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.17); /* Subtle shadow */
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        text-align: left;
+      }
+
+      .card h2 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 1.5em;
+        color: #1d1d1f;
+      }
+
+      .card p {
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin: 8px 0;
+        color: #555;
+      }
+
+      .card strong {
+        color: #007aff; /* Apple's blue for emphasis */
+      }
+
+      .controls .buttons {
+        display: flex;
+        gap: 15px;
+        justify-content: center; /* Center buttons within the card */
+      }
+
+      button {
+        font-size: 1.2em;
+        padding: 12px 25px;
+        margin: 10px 0; /* Adjusted margin for flex layout */
+        cursor: pointer;
+        border-radius: 8px; /* Softer rounded corners */
+        border: none;
+        color: white;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      }
+
+      button.on {
+        background-color: #34c759; /* Apple green */
+      }
+
+      button.off {
+        background-color: #ff3b30; /* Apple red */
+      }
+
+      button:hover {
+        opacity: 0.85;
+        transform: translateY(-2px);
+      }
+
+      button:active {
+        transform: translateY(0px);
+      }
+
+      .status-ok {
+        color: #34c759; /* Green for OK status */
+      }
+      .status-warn {
+        color: #ff9500; /* Orange for warning */
+      }
+      .status-error {
+        color: #ff3b30; /* Red for error */
+      }
+
+      .gpio-grid {
+        display: grid;
+        grid-template-columns: repeat(
+          auto-fill,
+          minmax(120px, 1fr)
+        ); /* Adjust minmax for button size */
+        gap: 15px;
+        margin-top: 10px;
+      }
+
+      .gpio-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+      }
+
+      .gpio-item span {
+        font-weight: bold;
+        margin-bottom: 8px;
+        font-size: 0.9em;
+      }
+
+      .gpio-item .buttons {
+        display: flex;
+        gap: 8px;
+      }
+
+      .gpio-item button {
+        font-size: 0.8em; /* Smaller buttons for individual GPIOs */
+        padding: 8px 12px;
+        margin: 0; /* Remove default margin from general button style */
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2em;
+        }
+        .card {
+          padding: 20px;
+        }
+        button {
+          font-size: 1em;
+          padding: 10px 20px;
+        }
+        .controls .buttons {
+          flex-direction: column; /* Stack buttons on smaller screens */
+        }
+        .gpio-grid {
+          grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        }
+        .gpio-item button {
+          font-size: 0.7em;
+          padding: 6px 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Van Control Dashboard</h1>
+
+    <div class="container">
+      <div class="card gpio-controls">
+        <h2>GPIO Controls</h2>
+        <div class="gpio-grid">
+          {% for pin in gpio_pins %}
+          <div class="gpio-item">
+            <span>GPIO {{ pin }}</span>
+            <div class="buttons">
+              <form
+                action="{{ url_for('gpio_control', pin_number=pin, action='on') }}"
+                method="get"
+                style="display: contents"
+              >
+                <button
+                  class="on"
+                  {%
+                  if
+                  gpio_states[pin]
+                  %}disabled
+                  title="Already ON"
+                  {%
+                  endif
+                  %}
+                >
+                  ON
+                </button>
+              </form>
+              <form
+                action="{{ url_for('gpio_control', pin_number=pin, action='off') }}"
+                method="get"
+                style="display: contents"
+              >
+                <button
+                  class="off"
+                  {%
+                  if
+                  not
+                  gpio_states[pin]
+                  %}disabled
+                  title="Already OFF"
+                  {%
+                  endif
+                  %}
+                >
+                  OFF
+                </button>
+              </form>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="card readings">
+        <h2>Sensor Readings</h2>
+        {% if temperature is not none and humidity is not none %}
+        <p>
+          🌡️ Temperature:
+          <strong class="status-ok">{{ temperature }} °C</strong>
+        </p>
+        <p>💧 Humidity: <strong class="status-ok">{{ humidity }} %</strong></p>
+        {% else %}
+        <p class="status-error">⚠️ Sensor read failed</p>
+        {% endif %}
+      </div>
+
+      <div class="card system-info">
+        <h2>System Information</h2>
+        {% if cpu_temp is not none %}
+        <p>🖥️ CPU Temp: <strong class="status-ok">{{ cpu_temp }} °C</strong></p>
+        {% else %}
+        <p class="status-warn">⚠️ CPU Temp not available</p>
+        {% endif %} {% if voltage %}
+        <p>⚡ Core Voltage: <strong class="status-ok">{{ voltage }}</strong></p>
+        {% else %}
+        <p class="status-warn">⚠️ Core Voltage not available</p>
+        {% endif %} {% if current_time %}
+        <p>⏰ Current Time: <strong>{{ current_time }}</strong></p>
+        {% endif %}
+      </div>
+    </div>
+  </body>
 </html>
