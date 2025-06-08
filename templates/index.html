@@ -1,216 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Van Control Dashboard</title>
-    <style>
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
-          "Segoe UI Symbol";
-        background: #f0f2f5; /* Light gray background, common in modern UIs */
-        margin: 0;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
-        box-sizing: border-box;
-        color: #333;
-      }
-
-      h1 {
-        color: #1d1d1f; /* Apple's dark gray for text */
-        margin-bottom: 30px;
-        font-size: 2.5em;
-      }
-
-      .container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px;
-        width: 100%;
-        max-width: 1200px;
-      }
-
-      .card {
-        background: rgba(255, 255, 255, 0.6); /* Opaque glass effect */
-        backdrop-filter: blur(10px) saturate(180%);
-        -webkit-backdrop-filter: blur(10px) saturate(180%);
-        border-radius: 12px; /* Rounded corners like Apple UI elements */
-        padding: 25px;
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.17); /* Subtle shadow */
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        text-align: left;
-      }
-
-      .card h2 {
-        margin-top: 0;
-        margin-bottom: 15px;
-        font-size: 1.5em;
-        color: #1d1d1f;
-      }
-
-      .card p {
-        font-size: 1.1em;
-        line-height: 1.6;
-        margin: 8px 0;
-        color: #555;
-      }
-
-      .card strong {
-        color: #007aff; /* Apple's blue for emphasis */
-      }
-
-      .controls .buttons,
-      .pin-controls .buttons {
-        display: flex;
-        gap: 15px;
-        justify-content: flex-start; /* Align buttons to the start */
-        flex-wrap: wrap; /* Allow buttons to wrap to next line */
-      }
-
-      .pin-control-group {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 5px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        margin-bottom: 10px;
-        background-color: rgba(255, 255, 255, 0.7);
-      }
-
-      .pin-label {
-        font-weight: bold;
-        min-width: 70px; /* Ensure consistent width for pin labels */
-      }
-
-      button {
-        font-size: 1.2em;
-        padding: 12px 25px;
-        margin: 10px 0; /* Adjusted margin for flex layout */
-        cursor: pointer;
-        border-radius: 8px; /* Softer rounded corners */
-        border: none;
-        color: white;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-      }
-
-      button.on {
-        background-color: #34c759; /* Apple green */
-      }
-
-      button.off {
-        background-color: #ff3b30; /* Apple red */
-      }
-
-      button:hover {
-        opacity: 0.85;
-        transform: translateY(-2px);
-      }
-
-      button:active {
-        transform: translateY(0px);
-      }
-
-      .status-ok {
-        color: #34c759; /* Green for OK status */
-      }
-      .status-warn {
-        color: #ff9500; /* Orange for warning */
-      }
-      .status-error {
-        color: #ff3b30; /* Red for error */
-      }
-
-      /* Responsive adjustments */
-      @media (max-width: 768px) {
-        h1 {
-          font-size: 2em;
-        }
-        .card {
-          padding: 20px;
-        }
-        button {
-          font-size: 1em;
-          padding: 10px 20px;
-        }
-        .controls .buttons {
-          flex-direction: column; /* Stack buttons on smaller screens */
-        }
-      }
-    </style>
+    <title>Van Control</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/base.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/components/weather.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/components/system.css') }}"
+    />
   </head>
   <body>
-    <h1>Van Control Dashboard</h1>
-
     <div class="container">
-      <div class="card controls">
-        <h2>GPIO Pin Controls</h2>
-        <div class="pin-controls">
-          {% if controllable_pins %} {% for pin_num in controllable_pins %}
-          <div class="pin-control-group">
-            <span class="pin-label"
-              >GPIO {{ pin_num }}: {% if pin_states[pin_num] %}
-              <strong style="color: #34c759">ON</strong>
-              {% else %}
-              <strong style="color: #ff3b30">OFF</strong>
-              {% endif %}
-            </span>
-            <div class="buttons">
-              {% if pin_states[pin_num] %}
-              <form
-                action="{{ url_for('toggle_pin', pin_num=pin_num, action='off') }}"
-                method="get"
-                style="display: contents"
-              >
-                <button class="off">Turn OFF</button>
-              </form>
-              {% else %}
-              <form
-                action="{{ url_for('toggle_pin', pin_num=pin_num, action='on') }}"
-                method="get"
-                style="display: contents"
-              >
-                <button class="on">Turn ON</button>
-              </form>
-              {% endif %}
-            </div>
-          </div>
-          {% endfor %} {% else %}
-          <p>No controllable GPIO pins configured.</p>
-          {% endif %}
-        </div>
-      </div>
+      <!-- <div class="card">
+        <h1>Van Control</h1>
+        <p>Current Time: {{ current_time }}</p>
+      </div> -->
 
-      <div class="card readings">
-        <h2>Sensor Readings</h2>
-        {% if temperature is not none and humidity is not none %}
-        <p>
-          🌡️ Temperature:
-          <strong class="status-ok">{{ temperature }} °C</strong>
-        </p>
-        <p>💧 Humidity: <strong class="status-ok">{{ humidity }} %</strong></p>
-        {% else %}
-        <p class="status-error">⚠️ Sensor read failed</p>
-        {% endif %}
-      </div>
+      {% include 'components/weather.html' %} {% include
+      'components/system.html' %}
 
-      <div class="card system-info">
-        <h2>System Information</h2>
-        {% if cpu_temp is not none %}
-        <p>🖥️ CPU Temp: <strong class="status-ok">{{ cpu_temp }} °C</strong></p>
-        {% else %}
-        <p class="status-warn">⚠️ CPU Temp not available</p>
-        {% endif %} {% if voltage %}
-        <p>⚡ Core Voltage: <strong class="status-ok">{{ voltage }}</strong></p>
-        {% else %}
-        <p class="status-warn">⚠️ Core Voltage not available</p>
-        {% endif %} {% if current_time %}
-        <p>⏰ Current Time: <strong>{{ current_time }}</strong></p>
-        {% endif %}
+      <div class="card">
+        <h2>Controls</h2>
+        <form
+          action="{{ url_for('toggle_starlink', action='on' if not starlink_status else 'off') }}"
+          method="post"
+        >
+          <button type="submit" class="button">
+            {% if starlink_status %} Turn Off Starlink {% else %} Turn On
+            Starlink {% endif %}
+          </button>
+        </form>
       </div>
     </div>
   </body>

@@ -1,0 +1,54 @@
+{% from "icons/icons.html" import cpu_icon, voltage_icon, battery_icon,
+power_icon %}
+
+<div class="system-section">
+  <div class="system-content">
+    <div class="system-item">
+      <div class="system-label">
+        {{ cpu_icon() }}
+        <span>CPU Temp</span>
+      </div>
+      <span class="system-value">{{ cpu_temp }}°C</span>
+    </div>
+
+    <div class="system-item">
+      <div class="system-label">
+        {{ voltage_icon() }}
+        <span>Core Voltage</span>
+      </div>
+      <span class="system-value">{{ voltage }}</span>
+    </div>
+
+    <div class="system-item">
+      <div class="system-label">
+        {{ battery_icon() }}
+        <span>Battery Voltage</span>
+      </div>
+      <span class="system-value">{{ power_stats.battery_voltage }}</span>
+    </div>
+
+    <div class="system-item">
+      <div class="system-label">
+        {{ voltage_icon() }}
+        <span>Current</span>
+      </div>
+      <span class="system-value">{{ power_stats.current }}</span>
+    </div>
+
+    <div class="system-item">
+      <div class="system-label">
+        {{ battery_icon() }}
+        <span>Charge</span>
+      </div>
+      <span class="system-value">{{ power_stats.charge }}</span>
+    </div>
+
+    <div class="system-item">
+      <div class="system-label">
+        {{ power_icon() }}
+        <span>Power</span>
+      </div>
+      <span class="system-value">{{ power_stats.power }}</span>
+    </div>
+  </div>
+</div>

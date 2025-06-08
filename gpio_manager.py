@@ -9,11 +9,11 @@ class MockLED:
     
     def on(self):
         self._is_lit = True
-        print(f"Mock LED on pin {self.pin} turned ON")
+        print(f"Mock Starlink power turned ON")
     
     def off(self):
         self._is_lit = False
-        print(f"Mock LED on pin {self.pin} turned OFF")
+        print(f"Mock Starlink power turned OFF")
     
     @property
     def is_lit(self) -> bool:
@@ -35,30 +35,22 @@ class GPIOManager:
             self.GPIODeviceError = Exception
             self.DHT22 = None
         
-        self.leds: Dict[int, any] = {}
-        self.pin_states: Dict[int, bool] = {}
-        self.controllable_pins = []
+        # Define our specific pins
+        self.dht_pin = 4  # GPIO4 for DHT temperature sensor
+        self.starlink_pin = 24  # GPIO24 for Starlink power control
         
-        # Define usable GPIO pins (BCM numbering)
-        self.gpio_pins = list(range(2, 28))  # Covers GPIO2 to GPIO27
-        self.dht_pin = 4  # GPIO4 (physical pin 7)
-        
-        # Initialize pins
-        self._initialize_pins()
+        # Initialize Starlink control
+        self.starlink_led = None
+        self.starlink_state = False
+        self._initialize_starlink()
     
-    def _initialize_pins(self):
-        # Remove DHT pin from controllable pins
-        controllable_pins = [p for p in self.gpio_pins if p != self.dht_pin]
-        
-        for pin_num in controllable_pins:
-            try:
-                self.leds[pin_num] = self.LED(pin_num)
-                self.pin_states[pin_num] = self.leds[pin_num].is_lit
-            except self.GPIODeviceError:
-                print(f"Pin {pin_num} is not a valid GPIO pin, is in use, or caused an error. Skipping.")
-                continue
-        
-        self.controllable_pins = list(self.leds.keys())
+    def _initialize_starlink(self):
+        try:
+            self.starlink_led = self.LED(self.starlink_pin)
+            self.starlink_state = self.starlink_led.is_lit
+        except self.GPIODeviceError as e:
+            print(f"Error initializing Starlink control: {e}")
+            self.starlink_led = None
     
     def get_sensor_data(self) -> Tuple[Optional[float], Optional[float]]:
         if not self.is_raspberry_pi:
@@ -98,18 +90,18 @@ class GPIOManager:
             print(f"Error reading core voltage: {e}")
             return None
     
-    def toggle_pin(self, pin_num: int, action: str) -> bool:
-        if pin_num not in self.leds:
+    def toggle_starlink(self, action: str) -> bool:
+        if self.starlink_led is None:
             return False
         
         try:
             if action == 'on':
-                self.leds[pin_num].on()
-                self.pin_states[pin_num] = True
+                self.starlink_led.on()
+                self.starlink_state = True
             elif action == 'off':
-                self.leds[pin_num].off()
-                self.pin_states[pin_num] = False
+                self.starlink_led.off()
+                self.starlink_state = False
             return True
         except Exception as e:
-            print(f"Error toggling pin {pin_num}: {e}")
+            print(f"Error toggling Starlink power: {e}")
             return False 

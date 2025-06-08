@@ -1,0 +1,59 @@
+{% from "icons/icons.html" import sun_icon, moon_icon, cloud_icon, rain_icon %}
+
+<div class="weather-section">
+  {{ current_time }}
+  <div class="current-weather">
+    {{ cloud_icon() }}
+    <div class="current-temp">{{ weather_data.current.temperature }}</div>
+    <div class="weather-condition">{{ weather_data.current.condition }}</div>
+  </div>
+
+  <div class="weather-details">
+    <div class="detail-card">
+      <h3 class="detail-title">Today's Weather</h3>
+      <div class="detail-item">
+        <span class="detail-label">High/Low</span>
+        <span class="detail-value">{{ weather_data.details.high_low }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Humidity</span>
+        <span class="detail-value">{{ weather_data.details.humidity }}</span>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Wind</span>
+        <span class="detail-value">{{ weather_data.details.wind }}</span>
+      </div>
+    </div>
+
+    <div class="detail-card">
+      <h3 class="detail-title">Sun Times</h3>
+      <div class="sun-item">
+        <div class="sun-label">
+          {{ sun_icon() }}
+          <span>Sunrise</span>
+        </div>
+        <span class="detail-value">{{ weather_data.sun_times.sunrise }}</span>
+      </div>
+      <div class="sun-item">
+        <div class="sun-label">
+          {{ moon_icon() }}
+          <span>Sunset</span>
+        </div>
+        <span class="detail-value">{{ weather_data.sun_times.sunset }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="forecast-card">
+    <h3 class="detail-title">5-Day Forecast</h3>
+    {% for day in weather_data.forecast %}
+    <div class="forecast-item">
+      <span class="forecast-day">{{ day.day }}</span>
+      {% if day.icon == 'sunny' %} {{ sun_icon() }} {% elif day.icon == 'cloudy'
+      %} {{ cloud_icon() }} {% elif day.icon == 'rainy' %} {{ rain_icon() }} {%
+      endif %}
+      <span class="forecast-temp">{{ day.temp }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</div>
