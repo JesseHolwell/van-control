@@ -14,7 +14,7 @@ Ultra low power
 
 Doesn't always have an internet connection
 
-Fit on a galaxy a1 tablet in landscape
+Fit on a galaxy a8 tablet in landscape
 
 ## Plan
 
