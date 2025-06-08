@@ -35,10 +35,7 @@ def index():
 
 @app.route("/toggle_starlink/<action>", methods=["POST"])
 def toggle_starlink(action):
-    if action == "on":
-        gpio_manager.turn_on_starlink()
-    elif action == "off":
-        gpio_manager.turn_off_starlink()
+    gpio_manager.toggle_starlink(action)
     return redirect(url_for("index"))
 
 # if __name__ == '__main__':
