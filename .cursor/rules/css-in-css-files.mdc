@@ -1,0 +1,6 @@
+---
+description: 
+globs: .html,.css
+alwaysApply: false
+---
+If you are writing css, place it into a css file rather than inline in the html file

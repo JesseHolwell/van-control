@@ -1,59 +1,374 @@
 {% from "icons/icons.html" import sun_icon, moon_icon, cloud_icon, rain_icon %}
 
-<div class="weather-section">
-  {{ current_time }}
-  <div class="current-weather">
-    {{ cloud_icon() }}
-    <div class="current-temp">{{ weather_data.current.temperature }}</div>
-    <div class="weather-condition">{{ weather_data.current.condition }}</div>
-  </div>
+<!-- Weather, Clock & Environment Card -->
+<div class="card weather-card">
+  <div class="weather-grid">
+    <!-- Clock & Current Weather -->
+    <div class="clock-weather">
+      <div class="clock">
+        <div class="clock-time">{{ current_time.strftime('%H:%M') }}</div>
+        <p>{{ current_time.strftime('%A, %B %d, %Y') }}</p>
+      </div>
 
-  <div class="weather-details">
-    <div class="detail-card">
-      <h3 class="detail-title">Today's Weather</h3>
-      <div class="detail-item">
-        <span class="detail-label">High/Low</span>
-        <span class="detail-value">{{ weather_data.details.high_low }}</span>
-      </div>
-      <div class="detail-item">
-        <span class="detail-label">Humidity</span>
-        <span class="detail-value">{{ weather_data.details.humidity }}</span>
-      </div>
-      <div class="detail-item">
-        <span class="detail-label">Wind</span>
-        <span class="detail-value">{{ weather_data.details.wind }}</span>
-      </div>
-    </div>
-
-    <div class="detail-card">
-      <h3 class="detail-title">Sun Times</h3>
-      <div class="sun-item">
-        <div class="sun-label">
-          {{ sun_icon() }}
-          <span>Sunrise</span>
+      <div class="current-weather">
+        <svg
+          class="weather-icon icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+        </svg>
+        <div class="current-temp">{{ weather_data.current.temperature }}°C</div>
+        <div class="weather-condition">
+          {{ weather_data.current.condition }}
         </div>
-        <span class="detail-value">{{ weather_data.sun_times.sunrise }}</span>
       </div>
-      <div class="sun-item">
-        <div class="sun-label">
-          {{ moon_icon() }}
-          <span>Sunset</span>
-        </div>
-        <span class="detail-value">{{ weather_data.sun_times.sunset }}</span>
-      </div>
-    </div>
-  </div>
 
-  <div class="forecast-card">
-    <h3 class="detail-title">5-Day Forecast</h3>
-    {% for day in weather_data.forecast %}
-    <div class="forecast-item">
-      <span class="forecast-day">{{ day.day }}</span>
-      {% if day.icon == 'sunny' %} {{ sun_icon() }} {% elif day.icon == 'cloudy'
-      %} {{ cloud_icon() }} {% elif day.icon == 'rainy' %} {{ rain_icon() }} {%
-      endif %}
-      <span class="forecast-temp">{{ day.temp }}</span>
+      <!-- Van Environment -->
+      <div class="environment-card">
+        <h4 class="environment-title">Van Environment</h4>
+        <div class="environment-item">
+          <div class="environment-label">
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" />
+            </svg>
+            <span>Interior</span>
+          </div>
+          <span class="environment-value">{{ temperature }}°C</span>
+        </div>
+        <div class="environment-item">
+          <div class="environment-label">
+            <svg
+              class="icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"
+              />
+            </svg>
+            <span>Humidity</span>
+          </div>
+          <span class="environment-value">{{ humidity }}%</span>
+        </div>
+      </div>
     </div>
-    {% endfor %}
+
+    <!-- Today's Details & Sun Times -->
+    <div class="weather-details">
+      <div class="detail-card">
+        <h3 class="detail-title">Today's Weather</h3>
+        <div class="detail-item">
+          <span class="detail-label">High/Low</span>
+          <span class="detail-value"
+            >{{ weather_data.current.high }}° / {{ weather_data.current.low
+            }}°</span
+          >
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Humidity</span>
+          <span class="detail-value">{{ weather_data.current.humidity }}%</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Wind</span>
+          <span class="detail-value"
+            >{{ weather_data.current.wind_speed }} km/h</span
+          >
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <h3 class="detail-title">Sun Times</h3>
+        <div class="sun-item">
+          <div class="sun-label">
+            <svg
+              class="icon sun-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2" />
+              <path d="M12 20v2" />
+              <path d="m4.93 4.93 1.41 1.41" />
+              <path d="m17.66 17.66 1.41 1.41" />
+              <path d="M2 12h2" />
+              <path d="M20 12h2" />
+              <path d="m6.34 17.66-1.41 1.41" />
+              <path d="m19.07 4.93-1.41 1.41" />
+            </svg>
+            <span>Sunrise</span>
+          </div>
+          <span class="detail-value">{{ weather_data.sun_times.sunrise }}</span>
+        </div>
+        <div class="sun-item">
+          <div class="sun-label">
+            <svg
+              class="icon moon-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+            </svg>
+            <span>Sunset</span>
+          </div>
+          <span class="detail-value">{{ weather_data.sun_times.sunset }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5-Day Forecast -->
+    <div class="forecast-card">
+      <h3 class="detail-title">5-Day Forecast</h3>
+      {% for day in weather_data.forecast %}
+      <div class="forecast-item">
+        <span class="forecast-day">{{ day.day }}</span>
+        <svg
+          class="forecast-icon icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2" />
+          <path d="M12 20v2" />
+          <path d="m4.93 4.93 1.41 1.41" />
+          <path d="m17.66 17.66 1.41 1.41" />
+          <path d="M2 12h2" />
+          <path d="M20 12h2" />
+          <path d="m6.34 17.66-1.41 1.41" />
+          <path d="m19.07 4.93-1.41 1.41" />
+        </svg>
+        <span class="forecast-temp">{{ day.high }}°/{{ day.low }}°</span>
+      </div>
+      {% endfor %}
+    </div>
   </div>
 </div>
+
+<style>
+  .weather-card {
+    padding: 24px;
+    height: 100%;
+  }
+
+  .weather-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 24px;
+    height: 100%;
+  }
+
+  .clock-weather {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .clock {
+    text-align: center;
+  }
+
+  .clock-time {
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: #090609;
+    margin-bottom: 4px;
+  }
+
+  .current-weather {
+    text-align: center;
+  }
+
+  .weather-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 8px;
+    color: #b77d3c;
+  }
+
+  .current-temp {
+    font-size: 1.875rem;
+    font-weight: 300;
+    color: #090609;
+    margin-bottom: 4px;
+  }
+
+  .weather-condition {
+    color: #786c4e;
+    font-size: 0.875rem;
+  }
+
+  .environment-card {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    padding: 12px;
+  }
+
+  .environment-title {
+    color: #090609;
+    font-weight: 500;
+    margin-bottom: 8px;
+    font-size: 0.875rem;
+  }
+
+  .environment-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .environment-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .environment-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .environment-label svg {
+    width: 16px;
+    height: 16px;
+    color: #b77d3c;
+  }
+
+  .environment-label span {
+    color: #786c4e;
+    font-size: 0.75rem;
+  }
+
+  .environment-value {
+    color: #090609;
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+
+  .weather-details {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .detail-card {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .detail-title {
+    color: #090609;
+    font-weight: 500;
+    margin-bottom: 12px;
+    font-size: 0.875rem;
+  }
+
+  .detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .detail-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .detail-label {
+    color: #786c4e;
+    font-size: 0.75rem;
+  }
+
+  .detail-value {
+    color: #090609;
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+
+  .sun-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .sun-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .sun-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .sun-label svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .sun-label .sun-icon {
+    color: #b77d3c;
+  }
+
+  .sun-label .moon-icon {
+    color: #8c7268;
+  }
+
+  .sun-label span {
+    color: #786c4e;
+    font-size: 0.75rem;
+  }
+
+  .forecast-card {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .forecast-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .forecast-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .forecast-day {
+    color: #786c4e;
+    width: 32px;
+    font-size: 0.75rem;
+  }
+
+  .forecast-icon {
+    width: 16px;
+    height: 16px;
+    color: #b77d3c;
+  }
+
+  .forecast-temp {
+    color: #090609;
+    font-weight: 500;
+    font-size: 0.75rem;
+    text-align: right;
+  }
+</style>

@@ -1,11 +1,31 @@
 {% from "icons/icons.html" import cpu_icon, voltage_icon, battery_icon,
 power_icon %}
 
-<div class="system-section">
+<!-- System Information -->
+<div class="card system-card">
+  <h2 class="system-title">System Information</h2>
+
   <div class="system-content">
     <div class="system-item">
       <div class="system-label">
-        {{ cpu_icon() }}
+        <svg
+          class="system-icon icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <rect width="16" height="16" x="4" y="4" rx="2" />
+          <rect width="6" height="6" x="9" y="9" rx="1" />
+          <path d="M15 2v2" />
+          <path d="M15 20v2" />
+          <path d="M2 15h2" />
+          <path d="M2 9h2" />
+          <path d="M20 15h2" />
+          <path d="M20 9h2" />
+          <path d="M9 2v2" />
+          <path d="M9 20v2" />
+        </svg>
         <span>CPU Temp</span>
       </div>
       <span class="system-value">{{ cpu_temp }}°C</span>
@@ -13,42 +33,143 @@ power_icon %}
 
     <div class="system-item">
       <div class="system-label">
-        {{ voltage_icon() }}
+        <svg
+          class="system-icon icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M6 3h12l4 6-10 13L2 9Z" />
+          <path d="M11 3 8 9l4 13 4-13-3-6" />
+          <path d="M2 9h20" />
+        </svg>
         <span>Core Voltage</span>
       </div>
-      <span class="system-value">{{ voltage }}</span>
+      <span class="system-value">{{ core_voltage }}V</span>
     </div>
 
     <div class="system-item">
       <div class="system-label">
-        {{ battery_icon() }}
+        <svg
+          class="system-icon icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <rect width="16" height="10" x="2" y="7" rx="2" ry="2" />
+          <line x1="22" x2="22" y1="11" y2="13" />
+        </svg>
         <span>Battery Voltage</span>
       </div>
-      <span class="system-value">{{ power_stats.battery_voltage }}</span>
+      <span class="system-value">{{ battery_voltage }}V</span>
     </div>
 
     <div class="system-item">
       <div class="system-label">
-        {{ voltage_icon() }}
+        <svg
+          class="system-icon icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M6 3h12l4 6-10 13L2 9Z" />
+          <path d="M11 3 8 9l4 13 4-13-3-6" />
+          <path d="M2 9h20" />
+        </svg>
         <span>Current</span>
       </div>
-      <span class="system-value">{{ power_stats.current }}</span>
+      <span class="system-value">{{ current }}A</span>
     </div>
 
     <div class="system-item">
       <div class="system-label">
-        {{ battery_icon() }}
+        <svg
+          class="system-icon icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <rect width="16" height="10" x="2" y="7" rx="2" ry="2" />
+          <line x1="22" x2="22" y1="11" y2="13" />
+        </svg>
         <span>Charge</span>
       </div>
-      <span class="system-value">{{ power_stats.charge }}</span>
+      <span class="system-value">{{ charge }}%</span>
     </div>
 
     <div class="system-item">
       <div class="system-label">
-        {{ power_icon() }}
+        <svg
+          class="system-icon icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+          <path d="M12 15v3a3 3 0 0 0 3 3h1" />
+          <path d="M6 15a3 3 0 0 0 3 3h1" />
+        </svg>
         <span>Power</span>
       </div>
-      <span class="system-value">{{ power_stats.power }}</span>
+      <span class="system-value">{{ power }}W</span>
     </div>
   </div>
 </div>
+
+<style>
+  .system-card {
+    height: 55%;
+    padding: 24px;
+  }
+
+  .system-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #090609;
+    margin-bottom: 16px;
+  }
+
+  .system-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: calc(100% - 40px);
+    overflow-y: auto;
+  }
+
+  .system-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 12px;
+    padding: 12px;
+  }
+
+  .system-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .system-icon {
+    width: 16px;
+    height: 16px;
+    color: #b77d3c;
+  }
+
+  .system-label span {
+    color: #786c4e;
+    font-size: 0.875rem;
+  }
+
+  .system-value {
+    color: #090609;
+    font-weight: 500;
+  }
+</style>

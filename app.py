@@ -1,8 +1,8 @@
-from flask import Flask, render_template, redirect, url_for
-import datetime
+from flask import Flask, render_template, request, redirect, url_for
 from gpio_manager import GPIOManager
 from power_manager import PowerManager
 from weather_manager import WeatherManager
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -11,40 +11,35 @@ gpio_manager = GPIOManager()
 power_manager = PowerManager()
 weather_manager = WeatherManager()
 
-@app.route('/')
+@app.route("/")
 def index():
-    # Get current time
-    current_time = datetime.datetime.now().strftime("%H:%M:%S")
-    
-    # Get temperature and humidity from DHT sensor
+    current_time = datetime.now()
     temperature, humidity = gpio_manager.get_sensor_data()
-    
-    # Get system information
     cpu_temp = gpio_manager.get_cpu_temperature()
-    voltage = gpio_manager.get_core_voltage()
-    
-    # Get power statistics
+    core_voltage = gpio_manager.get_core_voltage()
+    starlink_status = gpio_manager.starlink_state
     power_stats = power_manager.get_all_power_stats()
-    
-    # Get weather data
     weather_data = weather_manager.get_all_weather_data()
-    
+
     return render_template(
-        'index.html',
+        "index.html",
         current_time=current_time,
         temperature=temperature,
         humidity=humidity,
         cpu_temp=cpu_temp,
-        voltage=voltage,
-        starlink_state=gpio_manager.starlink_state,
+        core_voltage=core_voltage,
+        starlink_status=starlink_status,
         power_stats=power_stats,
-        weather_data=weather_data
+        weather_data=weather_data,
     )
 
-@app.route('/toggle_starlink/<string:action>')
+@app.route("/toggle_starlink/<action>", methods=["POST"])
 def toggle_starlink(action):
-    gpio_manager.toggle_starlink(action)
-    return redirect(url_for('index'))
+    if action == "on":
+        gpio_manager.turn_on_starlink()
+    elif action == "off":
+        gpio_manager.turn_off_starlink()
+    return redirect(url_for("index"))
 
 # if __name__ == '__main__':
 #     app.run(host='0.0.0.0', port=5050)

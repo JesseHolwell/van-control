@@ -1,0 +1,135 @@
+<!-- Starlink Control -->
+<div class="card starlink-card">
+  <div class="starlink-header">
+    <svg
+      class="starlink-icon {% if not starlink_status %}off{% endif %} icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+    >
+      <path d="m2 2 20 20" />
+      <path d="M8.5 16.5a5 5 0 0 1 7 0" />
+      <path d="M2 8.82a15 15 0 0 1 4.17-2.65" />
+      <path d="M10.66 5c4.01-.36 8.14.9 11.34 3.76" />
+      <path d="M16.85 11.25a10 10 0 0 1 2.22 1.68" />
+      <path d="M5 13a10 10 0 0 1 5.24-2.76" />
+      <circle cx="12" cy="20" r="2" />
+    </svg>
+    <h2 class="starlink-title">Starlink Control</h2>
+  </div>
+
+  <div class="starlink-content">
+    <div class="status-row">
+      <span class="status-label">Status:</span>
+      <span
+        class="status-badge {% if starlink_status %}on{% else %}off{% endif %}"
+      >
+        {% if starlink_status %}ON{% else %}OFF{% endif %}
+      </span>
+    </div>
+
+    <form
+      action="{{ url_for('toggle_starlink', action='on' if not starlink_status else 'off') }}"
+      method="post"
+    >
+      <button
+        type="submit"
+        class="starlink-button {% if starlink_status %}off{% endif %}"
+      >
+        Turn {% if starlink_status %}OFF{% else %}ON{% endif %}
+      </button>
+    </form>
+  </div>
+</div>
+
+<style>
+  .starlink-card {
+    height: 45%;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .starlink-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .starlink-icon {
+    width: 24px;
+    height: 24px;
+    color: #b77d3c;
+  }
+
+  .starlink-icon.off {
+    color: #8c7268;
+  }
+
+  .starlink-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #090609;
+  }
+
+  .starlink-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+  }
+
+  .status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .status-label {
+    color: #786c4e;
+  }
+
+  .status-badge {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.875rem;
+  }
+
+  .status-badge.on {
+    background: #b77d3c;
+    color: white;
+  }
+
+  .status-badge.off {
+    background: rgba(140, 114, 104, 0.2);
+    color: #090609;
+  }
+
+  .starlink-button {
+    width: 100%;
+    padding: 12px;
+    font-weight: 500;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: #b77d3c;
+    color: white;
+  }
+
+  .starlink-button:hover {
+    background: rgba(183, 125, 60, 0.8);
+  }
+
+  .starlink-button.off {
+    background: #8c7268;
+  }
+
+  .starlink-button.off:hover {
+    background: rgba(140, 114, 104, 0.8);
+  }
+</style>
