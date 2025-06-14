@@ -1,0 +1,183 @@
+<!-- Switches Control Card -->
+<div class="card switches-card">
+  <div class="switches-header">
+    <h2 class="switches-title">Controls</h2>
+  </div>
+
+  <div class="switches-grid">
+    <!-- Starlink -->
+    <div class="switch-control">
+      <form
+        action="{{ url_for('toggle_starlink', action='on' if not starlink_status else 'off') }}"
+        method="post"
+      >
+        <button
+          type="submit"
+          class="switch-button {% if starlink_status %}active{% else %}inactive{% endif %}"
+        >
+          Starlink
+        </button>
+      </form>
+    </div>
+
+    <!-- Downlights -->
+    <div class="switch-control">
+      <form
+        action="{{ url_for('toggle_downlights', action='on' if not downlights_status else 'off') }}"
+        method="post"
+      >
+        <button
+          type="submit"
+          class="switch-button {% if downlights_status %}active{% else %}inactive{% endif %}"
+        >
+          Downlights
+        </button>
+      </form>
+    </div>
+
+    <!-- LED Upper -->
+    <div class="switch-control">
+      <form
+        action="{{ url_for('toggle_led_upper', action='on' if not led_upper_status else 'off') }}"
+        method="post"
+      >
+        <button
+          type="submit"
+          class="switch-button {% if led_upper_status %}active{% else %}inactive{% endif %}"
+        >
+          LED Upper
+        </button>
+      </form>
+    </div>
+
+    <!-- LED Lower -->
+    <div class="switch-control">
+      <form
+        action="{{ url_for('toggle_led_lower', action='on' if not led_lower_status else 'off') }}"
+        method="post"
+      >
+        <button
+          type="submit"
+          class="switch-button {% if led_lower_status %}active{% else %}inactive{% endif %}"
+        >
+          LED Lower
+        </button>
+      </form>
+    </div>
+
+    <!-- Spotlight -->
+    <div class="switch-control">
+      <form
+        action="{{ url_for('toggle_spotlight', action='on' if not spotlight_status else 'off') }}"
+        method="post"
+      >
+        <button
+          type="submit"
+          class="switch-button {% if spotlight_status %}active{% else %}inactive{% endif %}"
+        >
+          Spotlight
+        </button>
+      </form>
+    </div>
+
+    <!-- Water Pump -->
+    <div class="switch-control">
+      <form
+        action="{{ url_for('toggle_water_pump', action='on' if not water_pump_status else 'off') }}"
+        method="post"
+      >
+        <button
+          type="submit"
+          class="switch-button {% if water_pump_status %}active{% else %}inactive{% endif %}"
+        >
+          Water Pump
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  .switches-card {
+    height: auto;
+    min-height: 300px;
+    padding: 24px; /* 1.5rem if base is 16px, consistent with other cards often using 1rem or 1.5rem */
+    display: flex;
+    flex-direction: column;
+    background: var(--card-bg); /* Using CSS variable */
+    border-radius: 12px; /* Consistent with other cards */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Consistent with other cards */
+    margin-bottom: 16px;
+  }
+
+  .switches-header {
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .switches-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary); /* Using CSS variable */
+  }
+
+  .switches-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    gap: 20px; /* Spacing between buttons */
+    flex-grow: 1;
+    align-items: center; /* Center items vertically in grid cells */
+    justify-items: center; /* Center items horizontally in grid cells */
+  }
+
+  .switch-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* gap: 8px; Removed as label is now inside button */
+  }
+
+  .switch-button {
+    width: 80px; /* Slightly increased size for text */
+    height: 80px; /* Slightly increased size for text */
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center; /* Center text horizontally */
+    font-size: 0.75rem; /* Adjusted font size for button text */
+    color: white;
+    padding: 5px; /* Padding for text */
+    line-height: 1.2; /* Adjust line height for wrapped text */
+    word-break: break-word; /* Allow text to wrap */
+  }
+
+  .switch-button.inactive {
+    background-color: rgba(
+      255,
+      255,
+      255,
+      0.6
+    ); /* Adjusted inactive background */
+    opacity: 0.7;
+    color: #333333; /* Darker text color for light inactive background */
+  }
+
+  .switch-button.inactive:hover {
+    background-color: rgba(200, 200, 200, 0.7);
+    opacity: 0.9;
+  }
+
+  .switch-button.active {
+    background-color: #68784e;
+    opacity: 1;
+    color: white; /* Ensure active text color is white */
+  }
+
+  .switch-button.active:hover {
+    background-color: #576540; /* Slightly darker green on hover */
+  }
+</style>
