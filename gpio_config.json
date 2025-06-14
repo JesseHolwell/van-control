@@ -1,9 +1,9 @@
 {
   "dht_pin": 4,
   "starlink_pin": 24,
-  "downlights_pin": 19,
-  "led_upper_pin": 16,
-  "led_lower_pin": 26,
+  "downlights_pin": 26,
+  "led_upper_pin": 21,
+  "led_lower_pin": 19,
   "spotlight_pin": 20,
-  "water_pump_pin": 21
+  "water_pump_pin": 16
 }
