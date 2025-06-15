@@ -1,0 +1,20 @@
+Some rough notes around my PI install.
+
+Set up SSH over USB (refer to pi_setup.md)
+
+Connect
+ssh pi@raspberrypi.local
+
+Add swap file
+
+Remove WIFI connection
+
+Configure as AP
+
+Allow WIFIpassthrough
+
+Setup flask site
+
+To restart service after pulling the latest code:
+
+`sudo systemctl restart gpio-toggle.service`
